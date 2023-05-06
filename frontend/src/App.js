@@ -4,6 +4,7 @@ import Home from "./pages/Home";
 import ListPrescription from "./pages/ListPrescription";
 import Login from "./pages/Login";
 import Scanner from "./pages/Scanner";
+import NotFound from "./pages/NotFound";
 import {
   BrowserRouter as Router,
   Switch,
@@ -14,9 +15,9 @@ import {
 } from "react-router-dom";
 
 function ListPrescriptionWithId() {
-  const { id } = useParams();
+  const { id} = useParams();
 
-  return <ListPrescription id={id} />;
+  return <ListPrescription id={id}/>;
 }
 
 export default class App extends Component {
@@ -39,6 +40,9 @@ export default class App extends Component {
           </Route>
           <Route path="/scanner">
             <Layout page={<Scanner/>}/>
+          </Route>
+          <Route path="*">
+            <Layout page={<NotFound/>}/>
           </Route>
         </Switch>
       </Router>
