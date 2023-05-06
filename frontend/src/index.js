@@ -1,12 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './styles/index.css';
-import Login from './pages/Login.js';
+import App from './App.js';
+
+//https://startbootstrap.com/template/bare
+
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <Login />
+    <App />
   </React.StrictMode>
 );
