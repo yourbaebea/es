@@ -1,7 +1,7 @@
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404
 from .models import Prescription
-from .api import prescription_api
+from .api import prescription_api, prescriptions_api
 
 def not_found(request):
     return render(request, 'index.html')

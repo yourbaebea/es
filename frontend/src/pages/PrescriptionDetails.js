@@ -1,6 +1,6 @@
 import React, { Component, useEffect, useState } from "react";
 
-export default function ListPrescription(props) {
+export default function PrescriptionDetails(props) {
   const [prescription, setPrescription] = useState(null);
   const id = props.id;
   console.log(id);
@@ -29,12 +29,15 @@ export default function ListPrescription(props) {
         {prescription.medications.map(medication => (
           <li key={medication.medication_id}>
             {medication.name}
-            {medication.alternatives.length > 0 &&
+            {medication.alternatives.length > 0 && <div>
+              <div>alternatives</div>
               <ul>
                 {medication.alternatives.map(alternative => (
                   <li key={alternative.medication_id}>{alternative.name}</li>
                 ))}
               </ul>
+            </div>
+              
             }
           </li>
         ))}
@@ -46,5 +49,6 @@ export default function ListPrescription(props) {
     <p>Filled: {prescription.filled ? 'Yes' : 'No'}</p>
 
   </div>
+  
   );
 }

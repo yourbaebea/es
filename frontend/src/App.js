@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import Layout from "./components/Layout";
 import Home from "./pages/Home";
-import ListPrescription from "./pages/ListPrescription";
+import PrescriptionDetails from "./pages/PrescriptionDetails";
+import PrescriptionsList from "./pages/PrescriptionsList";
 import Login from "./pages/Login";
 import Scanner from "./pages/Scanner";
 import NotFound from "./pages/NotFound";
@@ -17,7 +18,7 @@ import {
 function ListPrescriptionWithId() {
   const { id} = useParams();
 
-  return <ListPrescription id={id}/>;
+  return <PrescriptionDetails id={id}/>;
 }
 
 export default class App extends Component {
@@ -37,6 +38,9 @@ export default class App extends Component {
           </Route>
           <Route exact path="/prescription/:id">
             <Layout page={<ListPrescriptionWithId/>}/>
+          </Route>
+          <Route exact path="/prescriptions">
+            <Layout page={<PrescriptionsList/>}/>
           </Route>
           <Route path="/scanner">
             <Layout page={<Scanner/>}/>

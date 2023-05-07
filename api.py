@@ -33,3 +33,18 @@ def prescription_api(request, id):
         # Add other prescription data here
     }
     return JsonResponse(prescription_data)
+
+
+def prescriptions_api(request):
+    prescriptions = Prescription.objects.all()
+    prescriptions_data = []
+    for prescription in prescriptions:
+        prescriptions_data.append({
+            'prescription_id': prescription.pk,
+            'expiration': prescription.expiration_date,
+            'patient': prescription.patient.name,
+            'status': prescription.status,
+            'filled': prescription.filled,
+            # Add other prescription data here
+        })
+    return JsonResponse(prescriptions_data, safe=False)

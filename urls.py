@@ -1,5 +1,4 @@
 from django.urls import path, re_path
-
 from . import views
 
 
@@ -11,6 +10,7 @@ urlpatterns = [
 
     #API
     path('api/prescription/<int:id>/', views.prescription_api, name='prescription_api'),
+    path('api/prescriptions/', views.prescriptions_api, name='prescriptions_api'),
 
 
 
