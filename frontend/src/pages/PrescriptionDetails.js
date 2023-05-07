@@ -1,18 +1,23 @@
 import React, { Component, useEffect, useState } from "react";
+import { fetchPrescription } from "../components/api";
 
 export default function PrescriptionDetails(props) {
   const [prescription, setPrescription] = useState(null);
-  const id = props.id;
+  const {id, token} = props;
   console.log(id);
 
   useEffect(() => {
-    async function fetchPrescription() {
-      const response = await fetch(`/api/prescription/${id}`);
-      const data = await response.json();
-      setPrescription(data);
+    async function loadPrescription() {
+      try {
+        const data = await fetchPrescription(id,token);
+        setPrescription(data);
+      } catch (error) {
+        console.log(error);
+        window.location.replace('/login');
+      }
     }
-    fetchPrescription();
-  }, [id]);
+    loadPrescription();
+  }, [id,token]);
 
   if (!prescription) {
     return <div>Loading...</div>;

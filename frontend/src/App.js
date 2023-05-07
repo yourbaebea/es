@@ -15,35 +15,44 @@ import {
   useParams
 } from "react-router-dom";
 
-function ListPrescriptionWithId() {
+function ListPrescriptionWithId(props) {
   const { id} = useParams();
 
-  return <PrescriptionDetails id={id}/>;
+  return <PrescriptionDetails id={id} token={props.token}/>;
 }
 
 export default class App extends Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      token: props.token || null
+    };
   }
+
+  setToken = (newToken) => {
+    this.setState({ token: newToken });
+  };
+
 
   render() {
     return (
       <Router>
         <Switch>
           <Route exact path="/">
-            <Layout page={<Home/>}/>
+            <Layout page={<Home/>} token={this.props.token}/>
           </Route>
           <Route path="/login">
-            <Layout page={<Login/>}/>
+            <Layout page={<Login setToken={this.setToken} />} token={this.props.token}/>
           </Route>
           <Route exact path="/prescription/:id">
-            <Layout page={<ListPrescriptionWithId/>}/>
+            <Layout page={<ListPrescriptionWithId/>} token={this.props.token}/>
           </Route>
           <Route exact path="/prescriptions">
-            <Layout page={<PrescriptionsList/>}/>
+            <Layout page={<PrescriptionsList/>} token={this.props.token}/>
           </Route>
           <Route path="/scanner">
-            <Layout page={<Scanner/>}/>
+            <Layout page={<Scanner/>} token={this.props.token}/>
           </Route>
           <Route path="*">
             <Layout page={<NotFound/>}/>
