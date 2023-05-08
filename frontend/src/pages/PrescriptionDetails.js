@@ -1,12 +1,14 @@
 import React, { Component, useEffect, useState } from "react";
-import { fetchPrescription } from "../components/api";
+import { fetchPrescription } from "../utils/api";
+import { checkToken } from "../utils/auth";
 
 export default function PrescriptionDetails(props) {
   const [prescription, setPrescription] = useState(null);
-  const {id, token} = props;
+  const {id} = props;
   console.log(id);
 
   useEffect(() => {
+    let token= checkToken(props);
     async function loadPrescription() {
       try {
         const data = await fetchPrescription(id,token);
@@ -17,7 +19,7 @@ export default function PrescriptionDetails(props) {
       }
     }
     loadPrescription();
-  }, [id,token]);
+  }, [id]);
 
   if (!prescription) {
     return <div>Loading...</div>;

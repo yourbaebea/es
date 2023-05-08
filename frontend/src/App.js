@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, setState } from "react";
 import Layout from "./components/Layout";
 import Home from "./pages/Home";
 import PrescriptionDetails from "./pages/PrescriptionDetails";
@@ -6,8 +6,10 @@ import PrescriptionsList from "./pages/PrescriptionsList";
 import Login from "./pages/Login";
 import Scanner from "./pages/Scanner";
 import NotFound from "./pages/NotFound";
+import history from "./utils/history"
+
 import {
-  BrowserRouter as Router,
+  BrowserRouter,
   Switch,
   Route,
   Link,
@@ -15,50 +17,43 @@ import {
   useParams
 } from "react-router-dom";
 
-function ListPrescriptionWithId(props) {
+function ListPrescriptionWithId() {
   const { id} = useParams();
 
-  return <PrescriptionDetails id={id} token={props.token}/>;
+  return <PrescriptionDetails id={id}/>;
 }
 
 export default class App extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      token: props.token || null
-    };
   }
 
-  setToken = (newToken) => {
-    this.setState({ token: newToken });
-  };
-
-
   render() {
+    
     return (
-      <Router>
+      <BrowserRouter history={history}>
         <Switch>
           <Route exact path="/">
-            <Layout page={<Home/>} token={this.props.token}/>
+            <Layout page={<Home />}/>
           </Route>
-          <Route path="/login">
-            <Layout page={<Login setToken={this.setToken} />} token={this.props.token}/>
-          </Route>
+          <Route path="/login" render={(props) => (
+            <Layout page={<Login {...props} />}/>
+          )} />
           <Route exact path="/prescription/:id">
-            <Layout page={<ListPrescriptionWithId/>} token={this.props.token}/>
+            <Layout page={<ListPrescriptionWithId/>}/>
           </Route>
           <Route exact path="/prescriptions">
-            <Layout page={<PrescriptionsList/>} token={this.props.token}/>
+            <Layout page={<PrescriptionsList/>}/>
           </Route>
           <Route path="/scanner">
-            <Layout page={<Scanner/>} token={this.props.token}/>
+            <Layout page={<Scanner/>}/>
           </Route>
           <Route path="*">
             <Layout page={<NotFound/>}/>
           </Route>
         </Switch>
-      </Router>
+      </BrowserRouter>
     );
   }
 }

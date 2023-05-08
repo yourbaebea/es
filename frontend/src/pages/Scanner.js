@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { checkToken } from "../utils/auth";
 import {
   Form,
   FormGroup,
@@ -17,6 +18,8 @@ export default class Scanner extends Component {
       input: '',
       validUrl: false
     };
+
+    checkToken(props);
   }
 
   

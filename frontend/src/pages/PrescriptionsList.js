@@ -1,9 +1,13 @@
 import React, { Component, useEffect, useState } from "react";
+import { checkToken } from "../utils/auth";
 
 export default function PrescriptionsList(props) {
   const [prescriptions, setPrescription] = useState(null);
 
+  
+
   useEffect(() => {
+    checkToken(props);
     async function fetchPrescription() {
       const response = await fetch(`/api/prescriptions/`);
       const data = await response.json();

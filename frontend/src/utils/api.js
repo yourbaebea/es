@@ -21,7 +21,7 @@ try {
     return res;
 
 } catch(err) {
-  throw new Error("Ah shit. Here we go again.");
+  throw new Error("Ah shit. Here we go again. " + err);
 }
 };
 

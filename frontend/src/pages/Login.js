@@ -7,12 +7,14 @@ import {
 
   Button
 } from 'reactstrap';
-import { fetchLogin } from '../components/api';
-import CSRFToken from '../components/CSRFToken';
-import { createBrowserHistory } from 'history';
+import { fetchLogin } from '../utils/api';
+import CSRFToken from '../utils/CSRFToken'
+import { useHistory } from "react-router-dom";
 
-const history = createBrowserHistory();
 
+//import { createBrowserHistory } from 'history';
+
+//const history = createBrowserHistory({forceRefresh:true});
 
 export default class Login extends Component {
   constructor(props) {
@@ -24,6 +26,7 @@ export default class Login extends Component {
     };
   }
 
+
   handleInputChange = (event) => {
     const { name, value } = event.target;
     this.setState({ [name]: value });
@@ -32,15 +35,15 @@ export default class Login extends Component {
   handleLogin = async (event) => {
     event.preventDefault();
     const { username, password } = this.state;
-    console.log("user: "+ username + " password: "+ password);
+    //console.log("user: "+ username + " password: "+ password);
     try {
       const response = await fetchLogin(username, password);
       
-      console.log(response);
-      //response.data.token
-      this.props.setToken(response.data.token);
-      //history.push('/');
-      //window.location.replace('/');
+      document.cookie = `token=${response.data.token}; path=/;`;
+
+      console.log("[handle login] pushing new history");
+      this.props.history.push("/");
+      //navigate("/");
     } catch (error) {
       this.setState({ error: error.message });
     }
