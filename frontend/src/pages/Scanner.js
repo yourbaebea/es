@@ -55,6 +55,7 @@ export default class Scanner extends Component {
   }
   
   async startFunction(prescription) {
+    //TODO
     try {
       const response = await fetch("/api/startfunction/" /*, {
       method: "POST",

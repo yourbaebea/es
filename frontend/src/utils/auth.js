@@ -23,3 +23,6 @@ export function checkToken(props){
 
 };
 
+
+//TODO figure out how to send the token as header in all api calls so we can also check the auth of each call
+
