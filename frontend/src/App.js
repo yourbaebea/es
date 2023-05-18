@@ -5,7 +5,8 @@ import PrescriptionsList from "./pages/PrescriptionsList";
 import Login from "./pages/Login";
 import Scanner from "./pages/Scanner";
 import NotFound from "./pages/NotFound";
-import history from "./utils/history"
+import history from "./utils/history";
+import Payment from "./pages/Payment";
 
 import {
   BrowserRouter,
@@ -36,6 +37,9 @@ export default class App extends Component {
           )} />
           <Route exact path="/prescriptions">
             <Layout page={<PrescriptionsList/>}/>
+          </Route>
+          <Route exact path="/payment">
+            <Layout page={<Payment/>}/>
           </Route>
           <Route path="/scanner">
             <Layout page={<Scanner/>}/>
