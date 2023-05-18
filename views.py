@@ -65,14 +65,27 @@ class LoginView(APIView):
             print("doesnt exist")
             return Response({'token': "login_error"})
 
+class TestView(APIView):
+    permission_classes = (permissions.AllowAny, )
+
+    def post(self, request, format=None):
+        data = self.request.data
+
+        id = data['id']
+
+        try:
+            print("exist")
+            p= Prescription.objects.get(id=id)
+            return Response({p})
+        except Prescription.DoesNotExist:
+            print("doesnt exist")
+            return Response({'prescription': "error_id"})
+
 
 def testing_lambda(request):
     #put here the name of the function u want to test
     findUserByUsername()
     hello()
-    return render(request, 'index.html')
-
-def not_found(request):
     return render(request, 'index.html')
 
 

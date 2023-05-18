@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import { checkToken } from "../utils/auth";
 import { Form, FormGroup, Label, Input, Button } from 'reactstrap';
-import { fetchPrescription } from "../utils/api";
+import { fetchPrescription, fetchOrder, fetchTest } from "../utils/api";
+import CSRFToken from '../utils/CSRFToken'
 
 const urlRegex = /\/prescription\/(\d+)$/;
 
@@ -27,6 +28,48 @@ export default class Scanner extends Component {
     });
   }
 
+  async fetchPrescriptions(id) {
+    try {
+      const response = await fetch("/api/order/" /*, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ id: id }),
+    }*/);
+
+    const data = await response.json();
+    const prescription= data[0];
+    console.log("prescription");
+    console.log(prescription);
+
+    this.setState({ prescription: prescription });
+
+    console.log("after set state");
+    console.log(this.state.prescription);
+    
+
+    } catch (error) {
+      console.error("Error fetching prescriptions:", error);
+    }
+  }
+  
+  async startFunction(prescription) {
+    try {
+      const response = await fetch("/api/startfunction/" /*, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(this.state.prescription),
+    }*/);
+    
+
+    } catch (error) {
+      console.error("Error going to lambda:", error);
+    }
+  }
+
   handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -38,16 +81,7 @@ export default class Scanner extends Component {
 
     if (match!=null) {
       const id = match[1];
-
-      async function fetchPrescription() {
-        const response = await fetch(`/api/prescription/${id}`);
-        const data = await response.json();
-        console.log(data)
-        this.setState({
-          prescription: data,
-        });
-      }
-      fetchPrescription();
+      this.fetchPrescriptions(id);
         
       
     } else {
@@ -55,24 +89,33 @@ export default class Scanner extends Component {
     }
   }
 
-  handleReplacement = async (alternativeId) => {
+
+  handleStart = async (event) => {
+    event.preventDefault();
+
+    this.startFunction(this.state.prescription);
+  }
+
+  handleReplacement = async (med, alt) => {
     // Make the necessary changes to replace the medication with the selected alternative
     // Reload the prescription after making the changes
     const { prescription } = this.state;
 
-    try {
-      // Perform the replacement logic
-      // ...
-
-      // Reload the prescription
-      const data = await fetchPrescription(prescription.id, checkToken(this.props));
-      this.setState({
-        prescription: data,
-      });
-    } catch (error) {
-      console.log(error);
-      window.location.replace('/login');
+  // Find the medication in the prescription and remove all alternatives
+  prescription.medications.forEach((medication) => {
+    if (medication.medication_id === med.medication_id) {
+      medication.alternatives = [];
+       // Add the selected alternative to the medication
+      medication.medication_id = alt.medication_id;
+      medication.name = alt.name;
+      medication.price = alt.price;
     }
+  });
+
+ 
+
+  // Update the prescription state with the updated prescription
+  this.setState({ prescription: prescription });
   }
 
   isValidUrl = (url) => {
@@ -91,6 +134,7 @@ export default class Scanner extends Component {
       <div>
         <h1>Scan QRCode</h1>
         <Form onSubmit={this.handleSubmit}>
+          <CSRFToken/>
           <Input type="text" value={input} onChange={this.handleInputChange} />
           <Button disabled={!validUrl}>Go</Button>
         </Form>
@@ -105,26 +149,34 @@ export default class Scanner extends Component {
               <ul>
                 {prescription.medications.map(medication => (
                   <li key={medication.medication_id}>
-                    {medication.name}
-                    {medication.alternatives.length > 0 && (
+                    {medication.name}- {medication.price}
+                    {medication.alternatives.length > 0 ? (
                       <div>
-                        <div>Alternatives</div>
+                        <div>Options</div>
                         <ul>
                           {medication.alternatives.map(alternative => (
-                            <li key={alternative.medication_id}>
-                              {alternative.name}
-                              <Button
-                                onClick={() => this.handleReplacement(alternative.medication_id)}
-                                color="primary"
-                                className="btn-block"
-                              >
-                                Select this
-                              </Button>
-                            </li>
+                            <div>
+                              <li key={alternative.medication_id}>
+                                
+                                <Button
+                                  onClick={() => this.handleReplacement(medication, alternative)}
+                                  color="primary"
+                                  className="btn-block">
+                                  {alternative.name}- {alternative.price}
+                                </Button>
+                              </li>
+                            </div>
+                            
+                            
+
+
+
                           ))}
                         </ul>
                       </div>
-                    )}
+                    ):(<div>
+                        <div>No other options</div>
+                      </div>)}
                   </li>
                 ))}
               </ul>
@@ -133,10 +185,18 @@ export default class Scanner extends Component {
             )}
             <p>Status: {prescription.status === 0 ? 'Unstarted' : prescription.status === 1 ? 'Started' : prescription.status === 2 ? 'First step' : prescription.status === 3 ? 'Second step' : prescription.status === 4 ? 'Third step' : prescription.status === 5 ? 'Finished' : 'Error'}</p>
             <p>Filled: {prescription.filled ? 'Yes' : 'No'}</p>
+          
           </div>
         ) : (
           <div>Waiting to Read Qr Code...</div>
         )}
+
+        <Form onSubmit={this.handleStart}>
+          <Button>Start order with lambda</Button>
+        </Form>
+
+
+        
       </div>
     );
   }

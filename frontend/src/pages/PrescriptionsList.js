@@ -1,42 +1,56 @@
-import React, { Component, useEffect, useState } from "react";
+import React, { Component } from "react";
 import { checkToken } from "../utils/auth";
 
-export default function PrescriptionsList(props) {
-  const [prescriptions, setPrescription] = useState(null);
-
-  
-
-  useEffect(() => {
-    checkToken(props);
-    async function fetchPrescription() {
-      const response = await fetch(`/api/prescriptions/`);
-      const data = await response.json();
-      setPrescription(data);
-    }
-    fetchPrescription();
-  });
-
-  if (!prescriptions) {
-    return <div>Loading...</div>;
+export default class PrescriptionList extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      prescriptions: null,
+    };
   }
 
-  return (
+  componentDidMount() {
+    this.fetchPrescriptions();
+  }
+
+  async fetchPrescriptions() {
+    try {
+      const response = await fetch("/api/prescriptions/");
+      const data = await response.json();
+      console.log(data);
+      this.setState({ prescriptions: data });
+    } catch (error) {
+      console.error("Error fetching prescriptions:", error);
+    }
+  }
+
+  render() {
+    const { prescriptions } = this.state;
+
+    if (!prescriptions) {
+      return <div>Loading...</div>;
+    }
+
+    return (
       <div>
         <h1>Prescriptions</h1>
         {prescriptions.length > 0 ? (
-          <table class="table">
-          <thead>
-            <tr>
-              <th scope="col">Prescription ID</th>
-              <th scope="col">Expiration</th>
-              <th scope="col">Patient</th>
-              <th scope="col">Status</th>
-              <th scope="col">Filled</th>
-            </tr>
-          </thead>
+          <table className="table">
+            <thead>
+              <tr>
+                <th scope="col">Prescription ID</th>
+                <th scope="col">Expiration</th>
+                <th scope="col">Patient</th>
+                <th scope="col">Status</th>
+                <th scope="col">Filled</th>
+              </tr>
+            </thead>
             <tbody>
               {prescriptions.map((prescription) => (
-                <tr key={prescription.prescription_id}>
+                <tr
+                  key={prescription.prescription_id}
+                  
+                >
                   <td scope="row">{prescription.prescription_id}</td>
                   <td>{prescription.expiration}</td>
                   <td>{prescription.patient}</td>
@@ -63,8 +77,7 @@ export default function PrescriptionsList(props) {
         ) : (
           <p>No prescriptions found.</p>
         )}
-        </div>
-      
-      
+      </div>
     );
+  }
 }

@@ -26,8 +26,29 @@ try {
 }
 };
 
+export async function fetchTest(id){
+  const config = {
+      headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'X-CSRFToken': Cookies.get('csrftoken')
+      }
+  };
 
+const body = JSON.stringify({ id });
 
+try {
+    const res = await axios.post(`/api/test`, body, config);
+
+    console.log("response in fetch arrived:");
+    console.log(res.data);
+
+    return res;
+
+} catch(err) {
+  throw new Error("Ah shit. Here we go again. " + err);
+}
+};
 
 /*
 export async function fetchLogin(username, password) {
@@ -59,8 +80,11 @@ export async function fetchLogin(username, password) {
   */
 
 
-export async function fetchPrescription(id,token) {
+export async function fetchPrescription(id) {
+    console.log("inside fetch");
     const response = await fetch(`/api/prescription/${id}`);
+
+    console.log(response);
   
     if (response.status === 200) {
       const data = await response.json();

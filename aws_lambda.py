@@ -8,20 +8,19 @@ def hello():
     response = lambda_client.invoke(
         FunctionName='helloWorld',
         InvocationType='RequestResponse',
-        Payload='{}'  # Pass any input data to the Lambda function as a JSON string
+        Payload=json.dumps({})
     )
     result = response['Payload'].read()
     print("result")
     print(result)
 
-def findUserByUsername():
+def lambda_get_prescription(p):
     lambda_client = boto3.client('lambda', region_name=settings.AWS_REGION)
     response = lambda_client.invoke(
-        FunctionName='findUserByUsername',
+        FunctionName='getPrescription',
         InvocationType='RequestResponse',
-        Payload='{"username":"ana"}'  # Pass any input data to the Lambda function as a JSON string
+        Payload=json.dumps(p)
     )
-    result = response['Payload'].read().decode('utf-8')
-    result_json = json.loads(result)
+    result = response['Payload'].read()
     print("result")
-    print(result_json)
+    print(result)

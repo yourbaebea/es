@@ -1,7 +1,6 @@
 import React, { Component, setState } from "react";
 import Layout from "./components/Layout";
 import Home from "./pages/Home";
-import PrescriptionDetails from "./pages/PrescriptionDetails";
 import PrescriptionsList from "./pages/PrescriptionsList";
 import Login from "./pages/Login";
 import Scanner from "./pages/Scanner";
@@ -17,11 +16,6 @@ import {
   useParams
 } from "react-router-dom";
 
-function ListPrescriptionWithId() {
-  const { id} = useParams();
-
-  return <PrescriptionDetails id={id}/>;
-}
 
 export default class App extends Component {
   constructor(props) {
@@ -40,9 +34,6 @@ export default class App extends Component {
           <Route path="/login" render={(props) => (
             <Layout page={<Login {...props} />}/>
           )} />
-          <Route exact path="/prescription/:id">
-            <Layout page={<ListPrescriptionWithId/>}/>
-          </Route>
           <Route exact path="/prescriptions">
             <Layout page={<PrescriptionsList/>}/>
           </Route>
