@@ -10,6 +10,7 @@ from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect
 from django.utils.decorators import method_decorator
 from rest_framework.authtoken.models import Token
 from django.conf import settings
+from .aws_lambda import *
 
 def generate_token(id,password):
     return jwt.encode({
@@ -29,7 +30,6 @@ def decode_token(token):
         return JsonResponse({'error': 'Invalid token'}, status=403)
 
 #response status: 200 OK, 401 NOT AUTHORIZED, 403 FORBIDDEN (token expired)
-
 
 class CheckAuthenticatedView(APIView):
     def get(self, request, format=None):
@@ -65,13 +65,12 @@ class LoginView(APIView):
             print("doesnt exist")
             return Response({'token': "login_error"})
 
-        
 
-
-        
-
-
-
+def testing_lambda(request):
+    #put here the name of the function u want to test
+    findUserByUsername()
+    hello()
+    return render(request, 'index.html')
 
 def not_found(request):
     return render(request, 'index.html')
