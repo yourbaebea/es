@@ -10,7 +10,7 @@ import datetime
 import json
 
 def order_api(request):
-    #TODO
+    #TODO get the id of the prescription we want from the scanner input
     p= Prescription.objects.get(pk=1)
 
     medication_data = []

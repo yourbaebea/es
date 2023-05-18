@@ -22,7 +22,7 @@ def generate_token(id,password):
 def decode_token(token):
     try:
         decoded_data = jwt.decode(token, settings.JWT_SECRET_KEY, algorithms=[settings.JWT_ALGORITHM])
-        #TODO if i actually want to check in the db the id and password, i dont think its necessary, but if it were to be done it would be here
+        # if i actually want to check in the db the id and password, i dont think its necessary, but if it were to be done it would be here
         return decoded_data
     except jwt.ExpiredSignatureError:
         return Response({'error': 'Expired token'}, status=401)
