@@ -1,10 +1,7 @@
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404
-from .models import Prescription
-from .api import prescription_api, prescriptions_api, login_api
-from django.contrib.auth import get_user_model, login, logout
-
-from django.contrib.auth.models import User
+from .models import *
+from .api import *
 from rest_framework.views import APIView
 from rest_framework import permissions
 from django.contrib import auth
@@ -12,6 +9,26 @@ from rest_framework.response import Response
 from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect
 from django.utils.decorators import method_decorator
 from rest_framework.authtoken.models import Token
+from django.conf import settings
+
+def generate_token(id,password):
+    return jwt.encode({
+        'user_id': id,
+        'user_password': password,
+        'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=1)
+    }, settings.JWT_SECRET_KEY, algorithm=settings.JWT_ALGORITHM)
+
+def decode_token(token):
+    try:
+        decoded_data = jwt.decode(token, settings.JWT_SECRET_KEY, algorithms=[settings.JWT_ALGORITHM])
+        #TODO if i actually want to check in the db the id and password, i dont think its necessary, but if it were to be done it would be here
+        return decoded_data
+    except jwt.ExpiredSignatureError:
+        return Response({'error': 'Expired token'}, status=401)
+    except jwt.InvalidTokenError:
+        return JsonResponse({'error': 'Invalid token'}, status=403)
+
+#response status: 200 OK, 401 NOT AUTHORIZED, 403 FORBIDDEN (token expired)
 
 
 class CheckAuthenticatedView(APIView):
@@ -38,22 +55,19 @@ class LoginView(APIView):
         username = data['username']
         password = data['password']
 
-        #TODO auth is not working not sure how to do it
+        try:
+            print("exist")
+            User.objects.get(username=username, password=password, pharmacist=True)
+            token = generate_token(username, password)
 
-        """
-        user = auth.authenticate(username=username, password=password)
+            return Response({'token': token})
+        except User.DoesNotExist:
+            print("doesnt exist")
+            return Response({'token': "login_error"})
 
-        if user is not None:
-            auth.login(request, user)
-            token, created = Token.objects.get_or_create(user=user)
-            return Response({'token': token.key})
-        else:
-            return Response({'error': 'Invalid credentials'}, status=401)
-        """
-        token= "123token"
+        
 
 
-        return Response({'token': token, 'user': username, 'password': password})
         
 
 

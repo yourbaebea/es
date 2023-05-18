@@ -1,5 +1,4 @@
 export function checkToken(props){
-  console.log("[auth] checking if token");
   let token =null;
 
   if(props.token!=null){
@@ -19,11 +18,7 @@ export function checkToken(props){
     token=cookies.token;
   }
 
-  //check the auth here
-  //TODO
-  console.log("[auth] token was found: " + token);
-
-  
+  console.log("token: "+ token);
   return token;
 
 };

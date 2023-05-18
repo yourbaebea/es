@@ -8,7 +8,6 @@ class PrescriptionMedicationInline(admin.TabularInline):
     extra = 1
 
 class MedicationForm(admin.ModelAdmin):
-   
     inlines = [PrescriptionMedicationInline]
 
 class MedicationAlternatives(admin.ModelAdmin):

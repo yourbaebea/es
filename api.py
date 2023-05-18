@@ -28,8 +28,6 @@ def login_api(request):
 
 
 
-
-
 def prescription_api(request, id):
     prescription = get_object_or_404(Prescription, pk=id)
     medication_data = []
@@ -56,7 +54,7 @@ def prescription_api(request, id):
         'medications': medication_data
         # Add other prescription data here
     }
-    return JsonResponse(prescription_data)
+    return JsonResponse(prescription_data, safe=False)
 
 def prescriptions_api(request):
     prescriptions = Prescription.objects.all()

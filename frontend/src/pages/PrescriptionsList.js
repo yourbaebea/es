@@ -36,7 +36,7 @@ export default function PrescriptionsList(props) {
           </thead>
             <tbody>
               {prescriptions.map((prescription) => (
-                <tr key={prescription.prescription_id} onClick={() => window.location.href = `/prescription/${prescription.prescription_id}`}>
+                <tr key={prescription.prescription_id}>
                   <td scope="row">{prescription.prescription_id}</td>
                   <td>{prescription.expiration}</td>
                   <td>{prescription.patient}</td>

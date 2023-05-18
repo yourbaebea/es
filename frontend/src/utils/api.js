@@ -16,7 +16,8 @@ const body = JSON.stringify({ username, password });
 try {
     const res = await axios.post(`/api/login`, body, config);
 
-    console.log("response in fetch arrived: user "+ res.data)
+    console.log("response in fetch arrived:");
+    console.log(res.data);
 
     return res;
 
@@ -59,14 +60,11 @@ export async function fetchLogin(username, password) {
 
 
 export async function fetchPrescription(id,token) {
-    const response = await fetch(`/api/prescription/${id}`, {
-      headers: {
-        'Authorization': `Token ${token}`
-      }
-    });
+    const response = await fetch(`/api/prescription/${id}`);
   
     if (response.status === 200) {
       const data = await response.json();
+      console.log(data);
       return data;
     } else if (response.status === 401) {
       throw new Error('Unauthorized');

@@ -12,10 +12,11 @@ export default function PrescriptionDetails(props) {
     async function loadPrescription() {
       try {
         const data = await fetchPrescription(id,token);
+        console.log(data);
         setPrescription(data);
       } catch (error) {
         console.log(error);
-        window.location.replace('/login');
+        //window.location.replace('/login');
       }
     }
     loadPrescription();
