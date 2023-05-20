@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import { checkToken } from "../utils/auth";
 import { Form, FormGroup, Label, Input, Button } from 'reactstrap';
-import { fetchPrescription, fetchOrder, fetchTest } from "../utils/api";
+import { fetchPrescriptionData, fetchStartOrder } from "../utils/api";
 import CSRFToken from '../utils/CSRFToken'
+import axios from 'axios';
 
 const urlRegex = /\/prescription\/(\d+)$/;
 
@@ -28,54 +29,45 @@ export default class Scanner extends Component {
     });
   }
 
+
   async fetchPrescriptions(id) {
     try {
-      const response = await fetch("/api/order/" /*, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ id: id }),
-    }*/);
+      const response = await fetchPrescriptionData(id);
 
-    const data = await response.json();
-    const prescription= data[0];
-    console.log("prescription");
-    console.log(prescription);
-
-    this.setState({ prescription: prescription });
-
-    console.log("after set state");
-    console.log(this.state.prescription);
-    
+      const prescription = response.data.prescription[0];
+      
+      this.setState({ prescription: prescription });
 
     } catch (error) {
       console.error("Error fetching prescriptions:", error);
     }
   }
-  
-  async startFunction(prescription) {
-    //TODO also figure out how to send the prescription thru the body
+
+  async startOrder() {
     try {
-      const response = await fetch("/api/startfunction/" /*, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(this.state.prescription),
-    }*/);
-    
+      const response = await fetchStartOrder(this.state.prescription);
+      console.log("res");
+      console.log(response);
+
+      const prescription = response.data.prescription[0];
+      
+      console.log("prescription");
+      console.log(prescription);
+
+      //after
 
     } catch (error) {
-      console.error("Error going to lambda:", error);
+      console.error("Error fetching prescriptions:", error);
     }
   }
+
+
 
   handleSubmit = async (event) => {
     event.preventDefault();
 
     console.log(this.state.input)
-
+    
     const match = this.state.input.match(urlRegex);
 
     console.log(match);
@@ -90,11 +82,15 @@ export default class Scanner extends Component {
     }
   }
 
-
   handleStart = async (event) => {
     event.preventDefault();
 
-    this.startFunction(this.state.prescription);
+    this.startOrder();
+
+    window.alert('Starting Step Functions success, created order in dynamicdb');
+
+    window.location.replace(`/payment/${this.state.prescription.prescription_id}`);
+    
   }
 
   handleReplacement = async (med, alt) => {
@@ -193,7 +189,7 @@ export default class Scanner extends Component {
         )}
 
         <Form onSubmit={this.handleStart}>
-          <Button>Start order with lambda</Button>
+          <Button>Go to Payment</Button>
         </Form>
 
 

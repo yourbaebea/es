@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import axios from "axios";
 
 export default class Layout extends Component {
   constructor(props) {
@@ -8,6 +9,9 @@ export default class Layout extends Component {
   removeCookie = async (event) => {
     event.preventDefault();
     document.cookie = 'token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+
+    axios.defaults.headers.common['Authorization'] = null;
+
     window.location.replace('/');
   };
 
@@ -24,7 +28,6 @@ export default class Layout extends Component {
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                       <li class="nav-item"><a class="nav-link" href="/" >Home</a></li>
-                      <li class="nav-item"><a class="nav-link" href="/prescriptions">Prescriptions</a></li>
                       <li class="nav-item"><a class="nav-link" href="/scanner">Scanner</a></li>
                       <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
                       <li class="nav-item"><a class="nav-link" onClick={this.removeCookie}>Logout</a></li>

@@ -3,6 +3,38 @@ import json
 from django.conf import settings
 
 
+def lambda_start_order(p):
+    lambda_client = boto3.client('lambda', region_name=settings.AWS_REGION)
+    response = lambda_client.invoke(
+        FunctionName='setOrder',
+        InvocationType='RequestResponse',
+        Payload=json.dumps(p)
+    )
+    result = response['Payload'].read()
+    print("result")
+    print(result)
+    return result
+
+
+def lambda_update_order(id,type):
+    lambda_client = boto3.client('lambda', region_name=settings.AWS_REGION)
+
+
+    response = lambda_client.invoke(
+        FunctionName=type,
+        InvocationType='RequestResponse',
+        Payload=json.dumps(id)
+    )
+    result = response['Payload'].read()
+    print("result")
+    print(result)
+    return result
+
+
+
+
+
+
 def hello():
     lambda_client = boto3.client('lambda', region_name=settings.AWS_REGION)
     response = lambda_client.invoke(
@@ -24,3 +56,4 @@ def lambda_get_prescription(p):
     result = response['Payload'].read()
     print("result")
     print(result)
+    return result

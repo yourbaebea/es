@@ -19,6 +19,8 @@ try {
     console.log("response in fetch arrived:");
     console.log(res.data);
 
+    axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.token}`;
+
     return res;
 
 } catch(err) {
@@ -26,73 +28,51 @@ try {
 }
 };
 
-export async function fetchTest(id){
+export async function fetchPrescriptionData(id) {
   const config = {
-      headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'X-CSRFToken': Cookies.get('csrftoken')
-      }
-  };
-
-const body = JSON.stringify({ id });
-
-try {
-    const res = await axios.post(`/api/test`, body, config);
-
-    console.log("response in fetch arrived:");
-    console.log(res.data);
-
-    return res;
-
-} catch(err) {
-  throw new Error("Ah shit. Here we go again. " + err);
-}
+    headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'X-CSRFToken': Cookies.get('csrftoken')
+    }
 };
+  try {
+    const response = await axios.post('/api/order', { id }, config);
+    return response;
+  } catch (error) {
+    throw new Error("Error fetching prescriptions:", error);
+  }
+}
 
-/*
-export async function fetchLogin(username, password) {
-    try {
-        console.log("inside handle login REACT")
-        const response = await fetch(`/api/login`, {
-            method: "POST",
-            headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'X-CSRFToken': Cookies.get('csrftoken')
-            },
-            body: JSON.stringify({username, password }),
-        });
-        
-        console.log("inside handle login REACT before sending response, csrftoken: "+ Cookies.get('csrftoken'))
-        const data = await response.json();
-        console.log("inside handle login REACT after sending response")
-        if (response.ok) {
-            return data.token;
-        } else {
-            throw new Error(data.message);
-        }
-    } catch (error) {
-        //console.error(error);
-        throw new Error("Something went wrong. Please try again later.");
+export async function fetchStartOrder(order) {
+  const config = {
+    headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'X-CSRFToken': Cookies.get('csrftoken')
+    }
+};
+  try {
+    const response = await axios.post('/api/startorder', { order }, config);
+    return response;
+  } catch (error) {
+    throw new Error("Error starting order:", error);
+  }
+}
+
+export async function fetchUpdateOrder(id,update_function) {
+  const config = {
+    headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'X-CSRFToken': Cookies.get('csrftoken')
     }
   };
-  */
-
-
-export async function fetchPrescription(id) {
-    console.log("inside fetch");
-    const response = await fetch(`/api/prescription/${id}`);
-
-    console.log(response);
-  
-    if (response.status === 200) {
-      const data = await response.json();
-      console.log(data);
-      return data;
-    } else if (response.status === 401) {
-      throw new Error('Unauthorized');
-    } else {
-      throw new Error('Something went wrong');
-    }
+  try {
+    const response = await axios.post('/api/updateorder', { id, update_function }, config);
+    return response;
+  } catch (error) {
+    throw new Error("Error starting order:", error);
   }
+}
+

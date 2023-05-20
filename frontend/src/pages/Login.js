@@ -10,7 +10,7 @@ import {
 import { fetchLogin } from '../utils/api';
 import CSRFToken from '../utils/CSRFToken'
 import { useHistory } from "react-router-dom";
-
+import axios from 'axios';
 
 //import { createBrowserHistory } from 'history';
 
@@ -42,8 +42,7 @@ export default class Login extends Component {
       document.cookie = `token=${response.data.token}; path=/;`;
 
       console.log("[handle login] pushing new history");
-      this.props.history.push("/");
-      //navigate("/");
+      this.props.history.push("/scanner");
     } catch (error) {
       this.setState({ error: error.message });
     }

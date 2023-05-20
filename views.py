@@ -1,7 +1,8 @@
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404
 from .models import *
-from .api import *
+import jwt
+import datetime
 from rest_framework.views import APIView
 from rest_framework import permissions
 from django.contrib import auth
@@ -31,20 +32,6 @@ def decode_token(token):
 
 #response status: 200 OK, 401 NOT AUTHORIZED, 403 FORBIDDEN (token expired)
 
-class CheckAuthenticatedView(APIView):
-    def get(self, request, format=None):
-        user = self.request.user
-
-        try:
-            isAuthenticated = user.is_authenticated
-
-            if isAuthenticated:
-                return Response({ 'isAuthenticated': 'success' })
-            else:
-                return Response({ 'isAuthenticated': 'error' })
-        except:
-            return Response({ 'error': 'Something went wrong when checking authentication status' })
-
 
 class LoginView(APIView):
     permission_classes = (permissions.AllowAny, )
@@ -65,29 +52,85 @@ class LoginView(APIView):
             print("doesnt exist")
             return Response({'token': "login_error"})
 
-class TestView(APIView):
+
+class OrderView(APIView):
     permission_classes = (permissions.AllowAny, )
 
     def post(self, request, format=None):
         data = self.request.data
 
         id = data['id']
-
         try:
-            print("exist")
-            p= Prescription.objects.get(id=id)
-            return Response({p})
+            print("exist: id "+ id)
+
+            p= Prescription.objects.get(pk=1)
+
+            medication_data = []
+            for medication in p.medications.all():
+                medication_dict = {
+                    'medication_id': medication.pk,
+                    'name': medication.name,
+                    'price': medication.price,
+                    'alternatives': []
+                }
+                for alternative in medication.alternatives.all():
+                    medication_dict['alternatives'].append({
+                        'medication_id': alternative.pk,
+                        'name': alternative.name,
+                        'price': alternative.price
+                    })
+                medication_data.append(medication_dict)
+
+                prescriptions_data = []
+                prescriptions_data.append({
+                        'prescription_id': p.pk,
+                        'expiration': p.expiration_date,
+                        'patient': p.patient.name,
+                        'status': p.status,
+                        'filled': p.filled,
+                        'medications': medication_data,
+                        # Add other prescription data here
+                    })
+            
+            authorization_header = self.request.META.get('HTTP_AUTHORIZATION')
+            print("Authorization header:", authorization_header)
+            return Response({'prescription': prescriptions_data})
         except Prescription.DoesNotExist:
             print("doesnt exist")
-            return Response({'prescription': "error_id"})
+            return Response({'prescription': "prescription_error"})
 
 
-def testing_lambda(request):
-    #put here the name of the function u want to test
-    findUserByUsername()
-    hello()
-    return render(request, 'index.html')
+class StartOrderView(APIView):
+    permission_classes = (permissions.AllowAny, )
 
+    def post(self, request, format=None):
+        data = self.request.data
+
+        order = data['order']
+        print("exist: order "+ order)
+
+        #get the lambda functions
+        status="start order done"
+        temp_status=lambda_start_order(order)
+        print(temp_status)
+
+        return Response({'order_status': status})
+
+class UpdateOrderView(APIView):
+    permission_classes = (permissions.AllowAny, )
+
+    def post(self, request, format=None):
+        data = self.request.data
+
+        order_id = data['id']
+        update_function = data['update_function']
+
+        #get the lambda functions
+        status="start order done"
+        temp_status=lambda_update_order(order_id, update_function)
+        print(temp_status)
+
+        return Response({'order_status': status})
 
 def index(request):
     return render(request, 'index.html')
