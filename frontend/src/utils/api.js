@@ -24,7 +24,7 @@ try {
     return res;
 
 } catch(err) {
-  throw new Error("Ah shit. Here we go again. " + err);
+  throw new Error("Ah sht. Here we go again. " + err);
 }
 };
 
@@ -76,3 +76,27 @@ export async function fetchUpdateOrder(id,update_function) {
   }
 }
 
+export async function fetchFacialRekognition(img){
+  const config = {
+      headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'multipart/form-data',
+          'X-CSRFToken': Cookies.get('csrftoken')
+      }
+  };
+
+  const formData = new FormData();
+  formData.append('image', img);
+
+try {
+    const res = await axios.post(`/api/rekognition`, formData, config);
+
+    console.log("response in fetch arrived:");
+    console.log(res.data);
+
+    return res;
+
+} catch(err) {
+  throw new Error("Ah sht. Here we go again. " + err);
+}
+};

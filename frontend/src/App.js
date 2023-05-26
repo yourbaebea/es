@@ -1,7 +1,6 @@
 import React, { Component, setState } from "react";
 import Layout from "./components/Layout";
 import Home from "./pages/Home";
-import PrescriptionsList from "./pages/PrescriptionsList";
 import Login from "./pages/Login";
 import Scanner from "./pages/Scanner";
 import NotFound from "./pages/NotFound";

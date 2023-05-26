@@ -1,7 +1,7 @@
 import React, { Component, useState } from "react";
 import { checkToken } from "../utils/auth";
 import axios from 'axios';
-import { fetchPayment, fetchUpdateOrder } from "../utils/api";
+import { fetchPayment, fetchUpdateOrder, fetchFacialRekognition } from "../utils/api";
 import CSRFToken from "../utils/CSRFToken"
 import {
   Form,
@@ -21,6 +21,7 @@ export default class Payment extends Component {
       id: null,
       input: '',
       validUrl: false,
+      selectedImage: null,
       //token: checkToken(props)
     };
 
@@ -51,31 +52,37 @@ export default class Payment extends Component {
 
   handleImageUpload = async (event) => {
     event.preventDefault();
+    const imgFile = this.state.selectedImage; // Get the selected file
+
     try{
 
-    /*
-    const file = event.target.files[0];
-    this.setSelectedImage(URL.createObjectURL(file));
-      const response = await fetchPayment(file, this.state.token);
-      console.log(response.data); // Handle the response from the server
-    */
- 
+      const response = await fetchFacialRekognition(imgFile);
+
+      if(response.data.rekognition!=null){
+        window.alert(`Facial Rekognition: ${response.data.rekognition}, payment is already completed and another lambda function is updating order status on dynamicdb`);
+
+        //window.location.replace(`/status/${this.state.prescription.prescription_id}`);
+        window.location.replace("/");
+   
+
+      }
+      else{
+        window.alert(`Facial Rekognition Error: ${response.data.error}`);
+        this.setState({selectedImage : null });
+      }
+      
+
+
     } catch (error) {
       console.error(error);
     }
   };
 
-  handleConfirmation = async (event) => {
-    event.preventDefault();
-    
-    this.updatePaymentOrder()
-    
-    window.alert('Facial Rekognition success, payment is done and another lambda function is updating order status on dynamicdb');
 
-  };
+  setSelectedImage = async (event) => {
+    const selectedImage = event.target.files[0];
 
-  setSelectedImage = (selectedImage) => {
-    this.setState({ selectedImage });
+    this.setState({selectedImage : selectedImage });
   };
 
   render() {
@@ -83,23 +90,16 @@ export default class Payment extends Component {
       <div>
         
 
-        <Form onSubmit={this.handleImageUpload}> 
+        <Form onSubmit={this.handleImageUpload} enctype="multipart/form-data"> 
             <FormGroup>
-              <Input type="file" accept="image/*"  />
-              {this.state.selectedImage && <img src={this.state.selectedImage} alt="Selected" />}
-            </FormGroup>
+              <Input type="file" accept="image/*" name="image" onChange={this.setSelectedImage} />
+              {this.state.selectedImage && (<img src={URL.createObjectURL(this.state.selectedImage)} alt="Selected" style={{ width: '200px', height: '200px' }} />)}
+    </FormGroup>
+            
             <Button type="submit" color="primary" className="btn-block">Submit Image</Button>
             
         
         </Form>
-
-        <Button onClick={this.handleConfirmation} color="secondary" className="btn-block">
-          Confirm Payment
-        </Button>
-
-
-
-
 
       </div>
     );

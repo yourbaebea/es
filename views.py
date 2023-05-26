@@ -132,6 +132,33 @@ class UpdateOrderView(APIView):
 
         return Response({'order_status': status})
 
+class RekognitionView(APIView):
+    permission_classes = (permissions.AllowAny, )
+
+    def post(self, request, format=None):
+        img = self.request.FILES.get('image')
+
+        if img is None:
+            return Response({'error': 'no image found'})
+
+        img_binary = img.read()        
+        name= rekognition(img_binary)
+
+        if name== None:
+            return Response({'error': "no match found"})
+        else:
+
+            #get the lambda function that updates the status so the order is confirmed as payed
+            status="payment in lambda still not done"
+            #temp_status=lambda_update_order(order_id, update_function)
+            return Response({'rekognition': name, 'order_status': status})
+
+
+
+
+
+
+
 def index(request):
     return render(request, 'index.html')
 

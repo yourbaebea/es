@@ -31,6 +31,36 @@ def lambda_update_order(id,type):
     return result
 
 
+def rekognition(image_binary):
+    rekognition = boto3.client('rekognition', region_name=settings.AWS_REGION)
+    dynamodb = boto3.client('dynamodb', region_name=settings.AWS_REGION)
+    name= None
+
+    print("inside rekognition")
+    
+    response = rekognition.search_faces_by_image(
+            CollectionId='pharmacy_rekognition',
+            Image={'Bytes':image_binary}                                       
+            )
+
+    found = False
+    for match in response['FaceMatches']:
+        print (match['Face']['FaceId'],match['Face']['Confidence'])
+            
+        face = dynamodb.get_item(
+            TableName='facerecognition',  
+            Key={'RekognitionId': {'S': match['Face']['FaceId']}}
+            )
+        
+        if 'Item' in face:
+            print ("Found Person: ",face['Item']['FullName']['S'])
+            name= face['Item']['FullName']['S']
+            found = True
+
+    if not found:
+        print("Person cannot be recognized")
+
+    return name
 
 
 

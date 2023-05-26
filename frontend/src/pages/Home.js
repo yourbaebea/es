@@ -12,7 +12,7 @@ export default class Home extends Component {
     return (
         <div>
             <h1>Home</h1>
-            <p>not sure what to say here but slayyyyyyyy</p>
+            <p>This Pharmacy works!</p>
         </div>
     
     );
