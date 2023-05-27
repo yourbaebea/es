@@ -2,7 +2,6 @@ import boto3
 import json
 from django.conf import settings
 
-
 def lambda_start_order(p):
     lambda_client = boto3.client('lambda', region_name=settings.AWS_REGION)
     response = lambda_client.invoke(
@@ -63,8 +62,6 @@ def rekognition(image_binary):
     return name
 
 
-
-
 def hello():
     lambda_client = boto3.client('lambda', region_name=settings.AWS_REGION)
     response = lambda_client.invoke(
@@ -87,3 +84,4 @@ def lambda_get_prescription(p):
     print("result")
     print(result)
     return result
+

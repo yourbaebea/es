@@ -16,6 +16,7 @@ urlpatterns = [
     path('api/startorder', views.StartOrderView.as_view()),
     path('api/updateorder', views.UpdateOrderView.as_view()),
     path('api/rekognition', views.RekognitionView.as_view()),
+    path('api/startmachine', views.step_start_exe),
 
     #default
     re_path(r'^.*$', views.index, name="not_found"),
