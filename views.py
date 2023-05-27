@@ -12,6 +12,7 @@ from django.utils.decorators import method_decorator
 from rest_framework.authtoken.models import Token
 from django.conf import settings
 from .aws_lambda import *
+from .aws_step import *
 
 def generate_token(id,password):
     return jwt.encode({
@@ -149,7 +150,7 @@ class RekognitionView(APIView):
         else:
 
             #get the lambda function that updates the status so the order is confirmed as payed
-            status="payment in lambda still not done"
+            status=step_start_exe(request)
             #temp_status=lambda_update_order(order_id, update_function)
             return Response({'rekognition': name, 'order_status': status})
 
@@ -187,20 +188,6 @@ def login(request):
     response['X-Token'] = token
 
     return response
-
-
-def step_start_exe(request): #entra depois da recognition
-    client = boto3.client('stepfunctions', region_name='us-east-1') #criar antes (fora)
-    print("chega aqui")
-    response = client.start_execution(
-        stateMachineArn='arn:aws:states:us-east-1:084715651869:stateMachine:Project2',
-        name=('machine1' + str(datetime.datetime.now())).replace(" ", "").replace(":", "").replace(".", ""),
-        input=json.dumps('paracetamol')
-    )
-
-    print(response)
-
-    return HttpResponse(json.dumps(response['executionArn'], indent=2))
 
 
 
