@@ -10,12 +10,12 @@ export function checkToken(props){
       return { ...cookies, [name]: value };
     }, {});
 
-    if (cookies==null || cookies.token==null) {
+    if (cookies==null || cookies.BearerToken==null) {
       window.location.replace('/login');
       return null;
     }
 
-    token=cookies.token;
+    token=cookies.BearerToken;
   }
 
   console.log("token: "+ token);

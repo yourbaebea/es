@@ -39,7 +39,7 @@ export default class Login extends Component {
     try {
       const response = await fetchLogin(username, password);
       
-      document.cookie = `token=${response.data.token}; path=/;`;
+      document.cookie = `BearerToken=${response.data.token}; path=/;`;
 
       console.log("[handle login] pushing new history");
       this.props.history.push("/scanner");

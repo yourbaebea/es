@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import axios from "axios";
+import instance from '../utils/axios';
 
 export default class Layout extends Component {
   constructor(props) {
@@ -8,9 +8,9 @@ export default class Layout extends Component {
 
   removeCookie = async (event) => {
     event.preventDefault();
-    document.cookie = 'token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    document.cookie = 'BearerToken=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 
-    axios.defaults.headers.common['Authorization'] = null;
+    instance.defaults.headers.common['Authorization'] = null;
 
     window.location.replace('/');
   };

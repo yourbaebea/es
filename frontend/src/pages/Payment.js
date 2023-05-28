@@ -37,18 +37,6 @@ export default class Payment extends Component {
     // Use the prescription ID for further processing in the payment page
   }
 
-  async updatePaymentOrder() {
-    try {
-      //TODO this is the function name in aws
-      const update_function= "updatePaymentOrder"
-      const response = await fetchUpdateOrder(this.state.id,update_function );
-      console.log(response);
-
-
-    } catch (error) {
-      console.error("Error :", error);
-    }
-  }
 
   handleImageUpload = async (event) => {
     event.preventDefault();
@@ -57,12 +45,24 @@ export default class Payment extends Component {
     try{
 
       const response = await fetchFacialRekognition(imgFile);
+      const rekognition_name= response.data.rekognition;
+      console.log(rekognition_name);
 
-      if(response.data.rekognition!=null){
-        window.alert(`Facial Rekognition: ${response.data.rekognition}, payment is already completed and another lambda function is updating order status on dynamicdb`);
+      if(rekognition_name!=null){
+        
+        const response = await fetchUpdateOrder(this.state.id,"paymentOrder" );
+
+        if(response.data.update!=null){
+
+        window.alert(`Facial Rekognition: ${rekognition_name}, payment is already completed and another lambda function is updating order status on dynamicdb`);
 
         //window.location.replace(`/status/${this.state.prescription.prescription_id}`);
         window.location.replace("/");
+        }
+        else{
+
+          window.alert(`Facial Rekognition: ${rekognition_name}, but error in dynamicdb`);
+        }
    
 
       }

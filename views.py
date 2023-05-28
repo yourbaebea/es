@@ -12,7 +12,11 @@ from django.utils.decorators import method_decorator
 from rest_framework.authtoken.models import Token
 from django.conf import settings
 from .aws_lambda import *
+<<<<<<< Updated upstream
 from .aws_step import *
+=======
+import re
+>>>>>>> Stashed changes
 
 def generate_token(id,password):
     return jwt.encode({
@@ -25,13 +29,25 @@ def decode_token(token):
     try:
         decoded_data = jwt.decode(token, settings.JWT_SECRET_KEY, algorithms=[settings.JWT_ALGORITHM])
         # if i actually want to check in the db the id and password, i dont think its necessary, but if it were to be done it would be here
-        return decoded_data
+        print("decoded token")
+        print(decoded_data)
+        return None
     except jwt.ExpiredSignatureError:
         return Response({'error': 'Expired token'}, status=401)
     except jwt.InvalidTokenError:
-        return JsonResponse({'error': 'Invalid token'}, status=403)
+        return Response({'error': 'Invalid token'}, status=403)
 
-#response status: 200 OK, 401 NOT AUTHORIZED, 403 FORBIDDEN (token expired)
+#response status: 200 OK, 401 NOT AUTHORIZED, 403 FORBIDDEN (token expired), 404 NOTFOUND
+def authorization(meta):
+
+    header_item = next((item for item in meta.items() if item[0] == 'HTTP_COOKIE'), None)
+
+    if header_item!=None:
+        return decode_token(header_item[1].split("BearerToken=")[1])
+    else:
+        print("no auth")
+        return Response({'error': 'No token provided'}, status=404)
+
 
 
 class LoginView(APIView):
@@ -53,11 +69,18 @@ class LoginView(APIView):
             print("doesnt exist")
             return Response({'token': "login_error"})
 
-
 class OrderView(APIView):
     permission_classes = (permissions.AllowAny, )
 
     def post(self, request, format=None):
+        print("inside order view")
+
+        auth_error= authorization(request.META)
+        if auth_error !=None:
+            return auth_error
+        print("after auth")
+
+        
         data = self.request.data
 
         id = data['id']
@@ -100,43 +123,64 @@ class OrderView(APIView):
             print("doesnt exist")
             return Response({'prescription': "prescription_error"})
 
-
 class StartOrderView(APIView):
     permission_classes = (permissions.AllowAny, )
 
     def post(self, request, format=None):
+        auth_error= authorization(request.META)
+        if auth_error !=None:
+            return auth_error
+        print("after auth")
         data = self.request.data
 
         order = data['order']
-        print("exist: order "+ order)
+        print("exist: order ")
+        print(order)
 
-        #get the lambda functions
-        status="start order done"
-        temp_status=lambda_start_order(order)
-        print(temp_status)
+        for med in order["medications"]: #{'medication_id': 1, 'name': 'brufen', 'price': 10, 'alternatives': []}
+            del med["alternatives"]
 
-        return Response({'order_status': status})
+        print(order)
+
+
+        order_status =lambda_start_order(order)
+
+        if order_status== None:
+            return Response({'error': "db error"})
+        else:
+            return Response({'update': "db updated",'order_status': order_status})
 
 class UpdateOrderView(APIView):
     permission_classes = (permissions.AllowAny, )
 
     def post(self, request, format=None):
+        auth_error= authorization(request.META)
+        if auth_error !=None:
+            return auth_error
+        print("after auth")
         data = self.request.data
 
         order_id = data['id']
         update_function = data['update_function']
 
         #get the lambda functions
-        status="start order done"
-        temp_status=lambda_update_order(order_id, update_function)
-        print(temp_status)
 
-        return Response({'order_status': status})
+        order_status=lambda_update_order(order_id, update_function)
+
+        if order_status== None:
+            return Response({'error': "db error"})
+        else:
+            return Response({'update': "db updated",'order_status': order_status})
 
 class RekognitionView(APIView):
     permission_classes = (permissions.AllowAny, )
 
     def post(self, request, format=None):
+        auth_error= authorization(request.META)
+        if auth_error !=None:
+            return auth_error
+        print("after auth")
+
         img = self.request.FILES.get('image')
 
         if img is None:
@@ -153,12 +197,6 @@ class RekognitionView(APIView):
             status=step_start_exe(request)
             #temp_status=lambda_update_order(order_id, update_function)
             return Response({'rekognition': name, 'order_status': status})
-
-
-
-
-
-
 
 def index(request):
     return render(request, 'index.html')
@@ -181,6 +219,7 @@ def prescription(request,id):
 
 def login(request):
     
+    
     token = "your_token_value"
 
     # Render the index template and set the token value in the response headers
@@ -188,6 +227,9 @@ def login(request):
     response['X-Token'] = token
 
     return response
+<<<<<<< Updated upstream
 
 
 
+=======
+>>>>>>> Stashed changes

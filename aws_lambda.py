@@ -3,31 +3,39 @@ import json
 from django.conf import settings
 
 def lambda_start_order(p):
+    print("inside lambda start order")
+    #payload_bytes = json.dumps({"name":"name","age":"age"}).encode('utf-8')
     lambda_client = boto3.client('lambda', region_name=settings.AWS_REGION)
     response = lambda_client.invoke(
         FunctionName='setOrder',
         InvocationType='RequestResponse',
         Payload=json.dumps(p)
     )
-    result = response['Payload'].read()
-    print("result")
-    print(result)
-    return result
+
+    lambda_response = response['Payload'].read().decode('utf-8')
+    lambda_data = json.loads(lambda_response)
+    print(lambda_data)
+    body = lambda_data['body']
+    print(body)
+    print("back to call")
+    return body
 
 
 def lambda_update_order(id,type):
+    print("inside lambda update order")
     lambda_client = boto3.client('lambda', region_name=settings.AWS_REGION)
-
-
     response = lambda_client.invoke(
         FunctionName=type,
         InvocationType='RequestResponse',
-        Payload=json.dumps(id)
+        Payload=json.dumps({'id': id})
     )
-    result = response['Payload'].read()
-    print("result")
-    print(result)
-    return result
+    lambda_response = response['Payload'].read().decode('utf-8')
+    lambda_data = json.loads(lambda_response)
+    print(lambda_data)
+    body = lambda_data['body']
+    print(body)
+    print("back to call")
+    return body
 
 
 def rekognition(image_binary):

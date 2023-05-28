@@ -43,23 +43,6 @@ export default class Scanner extends Component {
     }
   }
 
-  async startOrder() {
-    try {
-      const response = await fetchStartOrder(this.state.prescription);
-      console.log("res");
-      console.log(response);
-
-      const prescription = response.data.prescription[0];
-      
-      console.log("prescription");
-      console.log(prescription);
-
-      //after
-
-    } catch (error) {
-      console.error("Error fetching prescriptions:", error);
-    }
-  }
 
 
 
@@ -85,11 +68,18 @@ export default class Scanner extends Component {
   handleStart = async (event) => {
     event.preventDefault();
 
-    this.startOrder();
+    const response = await fetchStartOrder(this.state.prescription);
+    console.log("res");
+    console.log(response);
 
-    window.alert('Starting Step Functions success, created order in dynamicdb');
+    if(response.data.update!=null){
 
-    window.location.replace(`/payment/${this.state.prescription.prescription_id}`);
+      window.alert('Starting Step Functions success, created order in dynamicdb');
+      window.location.replace(`/payment/${this.state.prescription.prescription_id}`);
+      }
+      else{
+        window.alert(`error creating order in dynamicdb`);
+      }
     
   }
 
@@ -183,14 +173,15 @@ export default class Scanner extends Component {
             <p>Status: {prescription.status === 0 ? 'Unstarted' : prescription.status === 1 ? 'Started' : prescription.status === 2 ? 'First step' : prescription.status === 3 ? 'Second step' : prescription.status === 4 ? 'Third step' : prescription.status === 5 ? 'Finished' : 'Error'}</p>
             <p>Filled: {prescription.filled ? 'Yes' : 'No'}</p>
           
+            <Form onSubmit={this.handleStart}>
+              <Button>Go to Payment</Button>
+            </Form>
           </div>
         ) : (
           <div>Waiting to Read Qr Code...</div>
         )}
 
-        <Form onSubmit={this.handleStart}>
-          <Button>Go to Payment</Button>
-        </Form>
+        
 
 
         

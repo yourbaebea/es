@@ -1,6 +1,6 @@
 // api.js
 import Cookies from 'js-cookie';
-import axios from 'axios';
+import instance from '../utils/axios';
 
 export async function fetchLogin(username, password){
   const config = {
@@ -14,12 +14,12 @@ export async function fetchLogin(username, password){
 const body = JSON.stringify({ username, password });
 
 try {
-    const res = await axios.post(`/api/login`, body, config);
+    const res = await instance.post(`/api/login`, body, config);
 
     console.log("response in fetch arrived:");
     console.log(res.data);
 
-    axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.token}`;
+    instance.defaults.headers.common['Authorization'] = `Bearer ${res.data.token}`;
 
     return res;
 
@@ -37,7 +37,7 @@ export async function fetchPrescriptionData(id) {
     }
 };
   try {
-    const response = await axios.post('/api/order', { id }, config);
+    const response = await instance.post('/api/order', { id }, config);
     return response;
   } catch (error) {
     throw new Error("Error fetching prescriptions:", error);
@@ -53,7 +53,7 @@ export async function fetchStartOrder(order) {
     }
 };
   try {
-    const response = await axios.post('/api/startorder', { order }, config);
+    const response = await instance.post('/api/startorder', { order }, config);
     return response;
   } catch (error) {
     throw new Error("Error starting order:", error);
@@ -69,7 +69,7 @@ export async function fetchUpdateOrder(id,update_function) {
     }
   };
   try {
-    const response = await axios.post('/api/updateorder', { id, update_function }, config);
+    const response = await instance.post('/api/updateorder', { id, update_function }, config);
     return response;
   } catch (error) {
     throw new Error("Error starting order:", error);
@@ -89,7 +89,7 @@ export async function fetchFacialRekognition(img){
   formData.append('image', img);
 
 try {
-    const res = await axios.post(`/api/rekognition`, formData, config);
+    const res = await instance.post(`/api/rekognition`, formData, config);
 
     console.log("response in fetch arrived:");
     console.log(res.data);
