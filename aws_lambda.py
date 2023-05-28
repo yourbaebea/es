@@ -1,11 +1,10 @@
 import boto3
 import json
-from django.conf import settings
 
 def lambda_start_order(p):
     print("inside lambda start order")
     #payload_bytes = json.dumps({"name":"name","age":"age"}).encode('utf-8')
-    lambda_client = boto3.client('lambda', region_name=settings.AWS_REGION)
+    lambda_client = boto3.client('lambda', region_name='us-east-1')
     response = lambda_client.invoke(
         FunctionName='setOrder',
         InvocationType='RequestResponse',
@@ -23,7 +22,7 @@ def lambda_start_order(p):
 
 def lambda_update_order(id,type):
     print("inside lambda update order")
-    lambda_client = boto3.client('lambda', region_name=settings.AWS_REGION)
+    lambda_client = boto3.client('lambda', region_name='us-east-1')
     response = lambda_client.invoke(
         FunctionName=type,
         InvocationType='RequestResponse',
@@ -39,8 +38,8 @@ def lambda_update_order(id,type):
 
 
 def rekognition(image_binary):
-    rekognition = boto3.client('rekognition', region_name=settings.AWS_REGION)
-    dynamodb = boto3.client('dynamodb', region_name=settings.AWS_REGION)
+    rekognition = boto3.client('rekognition', region_name='us-east-1')
+    dynamodb = boto3.client('dynamodb', region_name='us-east-1')
     name= None
 
     print("inside rekognition")
@@ -71,7 +70,7 @@ def rekognition(image_binary):
 
 
 def hello():
-    lambda_client = boto3.client('lambda', region_name=settings.AWS_REGION)
+    lambda_client = boto3.client('lambda', region_name='us-east-1')
     response = lambda_client.invoke(
         FunctionName='helloWorld',
         InvocationType='RequestResponse',
@@ -82,7 +81,7 @@ def hello():
     print(result)
 
 def lambda_get_prescription(p):
-    lambda_client = boto3.client('lambda', region_name=settings.AWS_REGION)
+    lambda_client = boto3.client('lambda', region_name='us-east-1')
     response = lambda_client.invoke(
         FunctionName='getPrescription',
         InvocationType='RequestResponse',

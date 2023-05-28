@@ -3,8 +3,6 @@ Ana Beatriz Marques, 2018274233 <br>
 Marta Santos, 2019220054 <br>
 Nour Dorgham, 2022181281 <br>
 
-
-
 ## Setup for AWS
 ```
 cd C:\Users\Ana\.aws # your path to the credentials
@@ -34,5 +32,19 @@ python manage.py makemigrations
 python manage.py migrate
 python manage.py runserver
 ```
+
+### Change in imports
+```
+pip freeze > requirements.txt
+```
+
+### Update WebServer
+- with vir env
+```
+eb deploy
+```
+
+
+
 
  
