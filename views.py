@@ -12,11 +12,8 @@ from django.utils.decorators import method_decorator
 from rest_framework.authtoken.models import Token
 from django.conf import settings
 from .aws_lambda import *
-<<<<<<< Updated upstream
 from .aws_step import *
-=======
 import re
->>>>>>> Stashed changes
 
 def generate_token(id,password):
     return jwt.encode({
@@ -216,7 +213,6 @@ def prescription(request,id):
         print('Prescription with id {} does not exist'.format(id))
         return HttpResponse('An error occurred while fetching the prescription.')
 
-
 def login(request):
     
     
@@ -227,9 +223,3 @@ def login(request):
     response['X-Token'] = token
 
     return response
-<<<<<<< Updated upstream
-
-
-
-=======
->>>>>>> Stashed changes
