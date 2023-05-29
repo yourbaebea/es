@@ -2,7 +2,7 @@
 
 - Add image to s3
 ```
-python .\putimage.py
+python .\putimages.py
 ```
 
 - add image in db from lambda function
