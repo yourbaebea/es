@@ -41,6 +41,8 @@ pip freeze > requirements.txt
 ### Update WebServer
 - with vir env
 ```
+
+python manage.py collectstatic
 eb deploy
 ```
 
