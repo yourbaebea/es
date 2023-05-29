@@ -47,6 +47,7 @@ export default class Payment extends Component {
 
       const response = await fetchFacialRekognition(imgFile);
       const rekognition_name= response.data.rekognition;
+      const order_status= response.data.order_status;
       console.log(rekognition_name);
 
       if(rekognition_name!=null){
@@ -55,7 +56,7 @@ export default class Payment extends Component {
 
         if(response.data.update!=null){
 
-        window.alert(`Facial Rekognition: ${rekognition_name}, payment is already completed and another lambda function is updating order status on dynamicdb`);
+        window.alert(`Facial Rekognition: ${rekognition_name}\nPayment: Success\nDynamicDB: ${response.data.update}\n${order_status}`);
 
         //window.location.replace(`/status/${this.state.prescription.prescription_id}`);
         window.location.replace("/");

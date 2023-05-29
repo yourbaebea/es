@@ -81,10 +81,14 @@ class OrderView(APIView):
         data = self.request.data
 
         id = data['id']
+
         try:
             print("exist: id "+ id)
 
-            p= Prescription.objects.get(pk=1)
+
+            p= Prescription.objects.get(pk=id)
+
+            print(p)
 
             medication_data = []
             for medication in p.medications.all():
