@@ -35,6 +35,7 @@ export default class App extends Component {
             <Layout page={<Login {...props} />}/>
           )} />
           <Route exact path="/payment/:id" component={Payment} />
+          
           <Route path="/scanner">
             <Layout page={<Scanner/>}/>
           </Route>

@@ -5,8 +5,7 @@ Nour Dorgham, 2022181281 <br>
 
 ## Setup for AWS
 ```
-cd C:\Users\Ana\.aws # your path to the credentials
-notepad credentials #update with aws credentials in website 
+notepad C:\Users\Ana\.aws\credentials #update with aws credentials in website 
 ```
 ## Start Code
 - terminal 1

@@ -140,12 +140,17 @@ class StartOrderView(APIView):
         print(order)
 
 
-        order_status =lambda_start_order(order)
+        status, order_status =lambda_start_order(order)
 
-        if order_status== None:
-            return Response({'error': "db error"})
+        print("status: ")
+        print(status)
+        print(order_status)
+
+        if status:
+            return Response({'update': "db updated",'order_status': order_status})   
         else:
-            return Response({'update': "db updated",'order_status': order_status})
+            return Response({'error': "db error", 'order_status': order_status})
+            
 
 class UpdateOrderView(APIView):
     permission_classes = (permissions.AllowAny, )

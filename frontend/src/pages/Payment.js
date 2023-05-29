@@ -8,7 +8,8 @@ import {
   FormGroup,
   Label,
   Input,
-
+  Row,
+  Col,
   Button,
 } from 'reactstrap';
 import Cookies from 'js-cookie';
@@ -88,19 +89,44 @@ export default class Payment extends Component {
   render() {
     return (
       <div>
-        
+        <div style={{ padding: '20px 20px' }}>
 
-        <Form onSubmit={this.handleImageUpload} enctype="multipart/form-data"> 
-            <FormGroup>
-              <Input type="file" accept="image/*" name="image" onChange={this.setSelectedImage} />
-              {this.state.selectedImage && (<img src={URL.createObjectURL(this.state.selectedImage)} alt="Selected" style={{ width: '200px', height: '200px' }} />)}
-    </FormGroup>
-            
-            <Button type="submit" color="primary" className="btn-block">Submit Image</Button>
-            
-        
-        </Form>
+        <h1>Payment</h1>
 
+        <Row>
+          <Col>
+            <Form onSubmit={this.handleImageUpload} encType="multipart/form-data">
+              <FormGroup>
+                <Input type="file" accept="image/*" name="image" onChange={this.setSelectedImage} />
+                {this.state.selectedImage && (
+                  <img
+                    src={URL.createObjectURL(this.state.selectedImage)}
+                    alt="Selected"
+                    style={{ width: '200px', height: '200px' }}
+                  />
+                )}
+              </FormGroup>
+              <Button type="submit" color="primary" className="btn-block">
+                Submit Image
+              </Button>
+            </Form>
+          </Col>
+          <Col>
+            <Button type="submit" disabled color="primary" className="btn-block">
+              Cash
+            </Button>
+          </Col>
+          <Col>
+            <Button type="submit" disabled color="primary" className="btn-block">
+              Card
+            </Button>
+          </Col>
+        
+        
+        
+        </Row>
+
+        </div>
       </div>
     );
   }
