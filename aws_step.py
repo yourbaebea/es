@@ -6,14 +6,15 @@ import json
 
 client = boto3.client('stepfunctions', region_name='us-east-1')
 
-def step_start_exe(request): #entra depois da recognition
-    print("chega aqui")
+def step_start_exe(request):
+    #print("chega aqui")
     response = client.start_execution(
         stateMachineArn='arn:aws:states:us-east-1:084715651869:stateMachine:Project2',
-        name=('machine1' + str(datetime.datetime.now())).replace(" ", "").replace(":", "").replace(".", ""),
+        name=('machine' + str(datetime.datetime.now())).replace(" ", "--").replace(":", "").replace(".", ""),
         input=json.dumps('paracetamol')
     )
 
-    print(response)
+    #print(response)
+    print("Start State Machine")
 
     return HttpResponse(json.dumps(response['executionArn'], indent=2))
