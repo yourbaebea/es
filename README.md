@@ -5,7 +5,7 @@ Marta Santos, 2019220054 <br>
 Nour Dorgham, 2022181281 <br>
 
 ## Demo
-![](https://github.com/yourbaebea/es/blob/main/demo.gif))
+![](https://github.com/yourbaebea/es/blob/main/demo.gif)
 
 ## Setup Django
 - create a django project in the virtual env
