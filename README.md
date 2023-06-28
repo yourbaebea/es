@@ -4,6 +4,9 @@ Ana Beatriz Marques, 2018274233 <br>
 Marta Santos, 2019220054 <br>
 Nour Dorgham, 2022181281 <br>
 
+### Final Grade
+17,1
+
 ## Demo
 ![](https://github.com/yourbaebea/es/blob/main/demo.gif)
 
